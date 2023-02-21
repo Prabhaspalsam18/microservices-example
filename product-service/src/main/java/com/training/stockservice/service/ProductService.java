@@ -7,24 +7,39 @@ import com.training.stockservice.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class ProductService {
 
     private final ProductRepository productRepository;
 
     @Autowired
-    public ProductService(ProductRepository stockRepository) {
-        this.productRepository = stockRepository;
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
-    public ProductResponse createProduct(ProductRequest stockRequest) {
 
-        Product stock = Product.builder()
-                .name(stockRequest.getName())
-                .description(stockRequest.getDescription())
+    public List<ProductResponse> getAllProducts() {
+
+        List<ProductResponse> productResponses = new ArrayList<>();
+
+        for (Product product: productRepository.findAll()) {
+            productResponses.add(new ProductResponse(product.getName(), product.getDescription(), 0.0));
+        }
+
+        return productResponses;
+    }
+
+    public ProductResponse createProduct(ProductRequest productRequest) {
+
+        Product product = Product.builder()
+                .name(productRequest.getName())
+                .description(productRequest.getDescription())
                 .build();
 
-        Product response = productRepository.save(stock);
+        Product response = productRepository.save(product);
 
         return ProductResponse.builder()
                 .name(response.getName())

@@ -2,11 +2,14 @@ package com.training.stockservice.controller;
 
 import com.training.stockservice.dto.ProductRequest;
 import com.training.stockservice.dto.ProductResponse;
+import com.training.stockservice.model.Product;
 import com.training.stockservice.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/product")
@@ -24,19 +27,12 @@ public class ProductController {
 
 
     @GetMapping
-    public String getAllProducts() {
-        String response = webClientBuilder.build().get()
-                .uri("http://inventory-service/api/inventory")
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-        log.info("order response: " + response);
-
-        return response;
+    public List<ProductResponse> getAllProducts() {
+       return productService.getAllProducts();
     }
 
-    @PostMapping("/v2")
-    public ProductResponse createProduct(@RequestBody ProductRequest stockRequest) {
-        return productService.createProduct(stockRequest);
+    @PostMapping()
+    public ProductResponse createProduct(@RequestBody ProductRequest productRequest) {
+        return productService.createProduct(productRequest);
     }
 }
